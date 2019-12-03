@@ -1,13 +1,45 @@
 from rest_framework import serializers
 from django.db import transaction
 from users.models import MainUser, Profile
-from utils.constants import GENDERS
+
+# from utils.constants import GENDERS
+
+GENDERS = ['M', 'F', 'None']
 
 
-class ProfileSerializer(serializers.Serializer):
+class MainUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=100)
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = MainUser
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password')
+
+    def create(self, validated_data):
+        # user = MainUser.objects.create_user(**validated_data)
+
+        with transaction.atomic():
+            user = MainUser.objects.create_user(**validated_data)
+            Profile.objects.create(user=user)
+            return user
+
+    def validate_password(self, value):
+        if len(value) < 5:
+            raise serializers.ValidationError('password is too short')
+        return value
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
+
+
+class ProfileGetSerializer(serializers.Serializer):
     bio = serializers.CharField(max_length=255)
     avatar = serializers.FileField(allow_null=True)
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = MainUserSerializer()
 
     def create(self, validated_data):
         profile = Profile.objects.create(**validated_data)
@@ -21,39 +53,13 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
 
-class MainUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField()
-    username = serializers.CharField(max_length=100)
-    password = serializers.CharField(write_only=True)
-    # profile = ProfileSerializer()
-
-    class Meta:
-        model = MainUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password')
-
-    def create(self, validated_data):
-        user = MainUser.objects.create_user(**validated_data)
-
-        # with transaction.atomic():
-        #     profile_data = validated_data.pop('profile')
-        #     user = MainUser.objects.create_user(**validated_data)
-        #     Profile.objects.create(user=user, **profile_data)
-        #     return user
-        return user
-
-    # def validate_password(self, value):
-    #     if len(value.password) < 5:
-    #         raise serializers.ValidationError('password is too short')
-    #     return value
-
-
 class MainUserGetSerializer(MainUserSerializer):
+    profile = ProfileSerializer()
+
     class Meta(MainUser.Meta):
         fields = MainUserSerializer.Meta.fields + ('gender', 'age', 'height', 'weight')
 
-    # def validate_gender(self, value):
-    #     if value.gender not in GENDERS:
-    #         raise serializers.ValidationError('gender options: [F, M, None]')
-    #     return value
-
-
+    def validate_gender(self, value):
+        if value not in GENDERS:
+            raise serializers.ValidationError('gender options: [F, M, None]')
+        return value

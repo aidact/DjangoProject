@@ -29,3 +29,5 @@ GENDERS = (
     (MALE, 'M'),
     (NONE, 'NONE')
 )
+
+TASK_ALLOWED_EXTS = ['.jpg', '.png']

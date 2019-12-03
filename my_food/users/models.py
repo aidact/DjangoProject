@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 from my_food import settings
 from utils.constants import GENDERS, NONE
+from utils.upload import document_path
+from utils.validators import document_extension
 
 
 class MainUserManager(BaseUserManager):
@@ -71,7 +73,8 @@ class MainUser(AbstractBaseUser, PermissionsMixin):
 
 class Profile(models.Model):
     bio = models.CharField(max_length=255)
-    avatar = models.FileField(null=True, blank=True)
+    avatar = models.FileField(upload_to=document_path, validators=[document_extension],
+                              null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
 
     class Meta:
@@ -79,4 +82,4 @@ class Profile(models.Model):
         verbose_name_plural = _('Profiles')
 
     def __str__(self):
-        return f'{self.user}: {self.address}, {self.website}'
+        return f'{self.user}'
