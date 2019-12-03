@@ -57,7 +57,7 @@ api/db.sqlite3
 # Media files
 media/
 # django/media
-.idea/
+.idea/*
 db.sqlite3
 celerybeat-schedule.db
 celerybeat-schedule
