@@ -1,0 +1,352 @@
+{
+	"info": {
+		"_postman_id": "51db07c8-c2f6-4865-9299-22a58b8e0525",
+		"name": "my_food",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\": \"Aida\",\n\t\"last_name\": \"Ualibekova\",\n\t\"email\": \"a@a.com\",\n\t\"username\": \"aida3\",\n\t\"password\": \"unicorn7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER}}/auth/signup/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"auth",
+								"signup",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "258963d3-4c28-481d-b6a1-ad83ebde7205",
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER}}/auth/login/?username=aida3&password=unicorn7",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "aida3"
+								},
+								{
+									"key": "password",
+									"value": "unicorn7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get profiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER}}/auth/profiles/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"auth",
+								"profiles",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/aida/Downloads/boris-baldinger-VEkIsvDviSs-unsplash.jpg"
+								},
+								{
+									"key": "bio",
+									"value": "Good person",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER}}/auth/profiles/1/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"auth",
+								"profiles",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Food",
+			"item": [
+				{
+					"name": "add food",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Bread\",\n\t\"type\": \"BREAKFAST\",\n\t\"quantity\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER}}/core/food/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"food",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get food",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER}}/core/food/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"food",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reccomendation",
+			"item": [
+				{
+					"name": "add recommendation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/core/recommendations/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"recommendations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get recommendations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER}}/core/recommendations/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"recommendations",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Compatibility",
+			"item": [
+				{
+					"name": "add compatibility",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"food1\": 1,\n\t\"food2\": 2,\n\t\"count\": 85\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER}}/core/compatibilities/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"compatibilities",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get compatibilities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER}}/core/compatibilities/",
+							"host": [
+								"{{SERVER}}"
+							],
+							"path": [
+								"core",
+								"compatibilities",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

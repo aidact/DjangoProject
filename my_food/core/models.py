@@ -21,17 +21,6 @@ class Food(models.Model):
         return f'{self.name}: {self.type}, {self.quantity}'
 
 
-class Recommendation(models.Model):
-    recommend = models.TextField(max_length=255)
-
-    class Meta:
-        verbose_name = 'Recommendation'
-        verbose_name_plural = 'Recommendations'
-
-    def __str__(self):
-        return f'{self.recommend}'
-
-
 class Statistics(models.Model):
     day = models.DateField(null=True)
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='statistics', null=True)
@@ -43,6 +32,18 @@ class Statistics(models.Model):
 
     def __str__(self):
         return f'{self.day}, {self.amount}'
+
+
+class Recommendation(models.Model):
+    # user = models.ForeignKey(MainUser, related_name='recommend')
+    recommend = models.TextField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Recommendation'
+        verbose_name_plural = 'Recommendations'
+
+    def __str__(self):
+        return f'{self.recommend}'
 
 
 class Compatibility(models.Model):
@@ -59,10 +60,11 @@ class Compatibility(models.Model):
 
 
 class Block(models.Model):
-    food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='block')
-    water = models.IntegerField()
-    recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE, related_name='block')
-    compatibility = models.ManyToManyField(Compatibility)
+    day = models.DateField(null=True)
+    food = models.ManyToManyField(Food, related_name='block')
+    water = models.IntegerField(null=True, blank=True)
+    recommendation = models.ForeignKey(Recommendation, null=True, blank=True, on_delete=models.CASCADE, related_name='block')
+    compatibility = models.ManyToManyField(Compatibility, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Block'

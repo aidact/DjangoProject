@@ -1,4 +1,9 @@
+import json
+
 from django.contrib import admin
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import F
+from django.db.models.functions import TruncDay
 
 from core.models import Food, Compatibility, Recommendation, Wall, Statistics
 
@@ -39,6 +44,19 @@ class StatisticsAdmin(admin.ModelAdmin):
 
     fields = ('day', 'food', 'amount')
 
+    def changelist_view(self, request, extra_context=None):
+        chart_data = (
+            Statistics.objects.annotate(date=TruncDay("day"))
+                .values("date")
+                .annotate(y=F("amount"))
+                .order_by("-date")
+        )
+
+        as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
+        extra_context = extra_context or {"chart_data": as_json}
+
+        return super().changelist_view(request, extra_context=extra_context)
+
 
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
@@ -47,7 +65,7 @@ class RecommendationAdmin(admin.ModelAdmin):
         'recommend'
     )
 
-    fields = ('recommend', )
+    fields = ('recommend',)
 
 
 @admin.register(Wall)
