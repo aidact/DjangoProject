@@ -4,6 +4,21 @@ from users.models import MainUser
 from utils.constants import TYPES, BREAKFAST
 
 
+class FoodManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+
+class StatisticsManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+
+class RecommendationManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+
 class Food(models.Model):
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=10, choices=TYPES, default=BREAKFAST)
@@ -12,6 +27,8 @@ class Food(models.Model):
     proteins = models.FloatField(null=True)
     fat = models.FloatField(null=True)
     quantity = models.IntegerField()
+
+    objects = FoodManager()
 
     class Meta:
         verbose_name = 'Food'
@@ -26,6 +43,8 @@ class Statistics(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='statistics', null=True)
     amount = models.IntegerField(null=True)
 
+    objects = StatisticsManager()
+
     class Meta:
         verbose_name = 'Statistics'
         verbose_name_plural = 'Statistics'
@@ -37,6 +56,8 @@ class Statistics(models.Model):
 class Recommendation(models.Model):
     # user = models.ForeignKey(MainUser, related_name='recommend')
     recommend = models.TextField(max_length=255)
+
+    objects = RecommendationManager()
 
     class Meta:
         verbose_name = 'Recommendation'

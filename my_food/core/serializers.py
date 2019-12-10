@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
 from core.models import Wall, Recommendation, Compatibility, Food, Statistics
-from utils.constants import TYPES
+
+# from utils.constants import TYPES
+
+TYPES = ['BREAKFAST', 'BRUCNH', 'LUNCH', 'DINNER']
 
 
 class FoodSerializer(serializers.ModelSerializer):
@@ -9,11 +12,10 @@ class FoodSerializer(serializers.ModelSerializer):
         model = Food
         fields = '__all__'
 
-    # def validate_type(self, value):
-    #     print(value)
-        # if (value != "Breakfast") or (value != "Brunch") or (value != "Lunch") or (value != "Dinner"):
-        #     raise serializers.ValidationError('type options: [Breakfast, Brunch, Lunch, Dinner]')
-        # return value
+    def validate_type(self, value):
+        if value not in TYPES:
+            raise serializers.ValidationError('type options: [BREAKFAST, BRUCNH, LUNCH, DINNER]')
+        return value
 
 
 class CompatibilitySerializer(serializers.ModelSerializer):
